@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import postModel, { PostDocument } from "./post.model";
 import { AnyKeys, PaginateResult } from "mongoose";
+import commentModel from "../comment/comment.model";
 
 const safeQueryProperty = [
   "title",
@@ -74,5 +75,34 @@ export const index = async (req: Request, res: Response) => {
     return res.status(200).json(posts);
   } catch (error) {
     res.status(400).json(error);
+  }
+};
+
+export const show = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const {
+      page = 1,
+      per = 10,
+      sort = { createdAt: "desc" },
+    }: parsedQuery = req.query;
+
+    const limit = per;
+    const post = await postModel.findOne({ _id: id });
+    const comments = await commentModel.paginate(
+      { postId: id },
+      {
+        page,
+        limit,
+        sort,
+      }
+    );
+    if (!post) {
+      return res.status(404).json({ message: "Not found" });
+    }
+    return res.status(200).json({ post, comments });
+  } catch (error) {
+    // console.error(error);
+    return res.status(400).json(error);
   }
 };
