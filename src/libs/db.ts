@@ -1,24 +1,20 @@
-import { createConnection } from "mongoose";
+import mongoose from "mongoose";
 import { MONGODB_URI } from "../config";
 import Consola from "consola";
 
-const mongoDbOptions = {
-  // autoReconnect: true,
-  // reconnectTries: 1000000,
-  // reconnectInterval: 3000,
-  keepAlive: true,
-  keepAliveInitialDelay: 300000,
-  useNewUrlParser: true,
-  // useFindAndModify: false,
-  useUnifiedTopology: true,
+const dbConn = async () => {
+  try {
+    const conn = await mongoose.connect(`${MONGODB_URI}`);
+    // console.log(conn);
+    mongoose.connection.on("open", () => {
+      Consola.success(`MongoDB open...`);
+    });
+    Consola.success(`MongoDB Connected: ${conn.connection.host}`);
+    return conn;
+  } catch (error) {
+    Consola.error(error);
+    process.exit(1);
+  }
 };
-const dbConn = createConnection(`${MONGODB_URI}`, mongoDbOptions);
 
-dbConn.on("connected", () => {
-  Consola.info("MongoDB connection Established");
-});
-
-dbConn.on("error", (error) => {
-  Consola.error(`MongoDB ERROR: ${error}`);
-});
 export default dbConn;

@@ -79,3 +79,11 @@ To ensure our application runs smoothly, we need to identify any potential bugs 
 ## How to run
 
 ...
+## start server API
+yarn run dev
+
+## run seeder Posts
+yarn run seed
+
+## truncate collections and run seeder
+yarn run seed -- reset
