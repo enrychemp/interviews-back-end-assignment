@@ -18,13 +18,4 @@ const CommentSchema = new Schema(
   }
 );
 
-CommentSchema.post("save", async function (doc, next) {
-  // const relatedPost = await Post.findById(doc.postId);
-  // if (relatedPost) {
-  //   relatedPost.lastComment = doc;
-  //   await relatedPost.save();
-  // }
-  next();
-});
-
 export { CommentSchema };
