@@ -8,26 +8,19 @@ import mongoose, {
   PaginateResult,
 } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
-import { PostSchema } from "./post.schema";
+import { CommentSchema } from "./comment.schema";
 
-// export interface IPostDocument extends mongoose.Document {
-//   title: string;
-//   body: string;
-//   lastComment?: string;
-//   lastCommentDate?: Date;
-// }
+CommentSchema.plugin(mongoosePaginate);
 
-PostSchema.plugin(mongoosePaginate);
-
-type TSchema = typeof PostSchema;
+type TSchema = typeof CommentSchema;
 type QueryHelpers = ObtainSchemaGeneric<TSchema, "TQueryHelpers">;
 type InstanceMethods = ObtainSchemaGeneric<TSchema, "TInstanceMethods">;
 type TVirtuals = ObtainSchemaGeneric<TSchema, "TVirtuals">;
 type StaticMethods = ObtainSchemaGeneric<TSchema, "TStaticMethods">;
 
-type IPost = InferSchemaType<TSchema>;
-type PostDocument = HydratedDocument<
-  IPost,
+type IComment = InferSchemaType<TSchema>;
+type CommentDocument = HydratedDocument<
+  IComment,
   InstanceMethods & TVirtuals,
   QueryHelpers
 >;
@@ -36,26 +29,26 @@ type PostDocument = HydratedDocument<
 interface PaginateModel
   extends StaticMethods,
     Model<
-      IPost,
+      IComment,
       QueryHelpers,
       InstanceMethods,
       TVirtuals,
-      PostDocument,
+      CommentDocument,
       TSchema
     > {
   paginate<O extends PaginateOptions>(
-    query?: FilterQuery<IPost>,
+    query?: FilterQuery<IComment>,
     options?: O,
-    callback?: (err: any, result: PaginateResult<PostDocument>) => void
-  ): Promise<PaginateResult<PostDocument>>;
+    callback?: (err: any, result: PaginateResult<CommentDocument>) => void
+  ): Promise<PaginateResult<CommentDocument>>;
 }
 
 // override mongose.PaginateModel to fix the type of PaginateDocument & define the Model type
 
-const Post = mongoose.model<PostDocument, mongoose.PaginateModel<PostDocument>>(
-  "Post",
-  PostSchema
-);
+const Comment = mongoose.model<
+  CommentDocument,
+  mongoose.PaginateModel<CommentDocument>
+>("Comment", CommentSchema);
 
-export default Post;
-export { IPost, PostDocument, Post };
+export default Comment;
+export { IComment, CommentDocument, Comment };
