@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import postModel, { PostDocument } from "./post.model";
-import { AnyKeys, PaginateResult } from "mongoose";
+import { PaginateResult } from "mongoose";
 import commentModel from "../comment/comment.model";
 
 const safeQueryProperty = [
@@ -18,7 +18,7 @@ type parsedQuery = {
   q?: string[];
   start?: string[];
   eq?: string[];
-  sort?: {};
+  sort?: string[];
 };
 
 export const listPost = async (req: Request, res: Response) => {
@@ -29,7 +29,7 @@ export const listPost = async (req: Request, res: Response) => {
       q = [],
       start = [],
       eq = [],
-      sort = { number: "asc" },
+      sort = [],
     }: parsedQuery = req.query;
 
     const limit = per;
@@ -57,11 +57,14 @@ export const listPost = async (req: Request, res: Response) => {
         }
       }
     }
-
-    for (let s in sort) {
-      if (s && safeQueryProperty.includes(s.toLowerCase())) {
-        sort[s.toLowerCase()] = sort[s] == "desc" ? -1 : 1;
+    if (sort.length > 0) {
+      for (let s in sort) {
+        if (s && safeQueryProperty.includes(s.toLowerCase())) {
+          sort[s.toLowerCase()] = sort[s] == "desc" ? -1 : 1;
+        }
       }
+    } else {
+      sort["updatedAt"] = -1;
     }
 
     const posts: PaginateResult<PostDocument> = await postModel.paginate(
@@ -81,11 +84,9 @@ export const listPost = async (req: Request, res: Response) => {
 export const showPost = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const {
-      page = 1,
-      per = 10,
-      sort = { createdAt: "desc" },
-    }: parsedQuery = req.query;
+    const { page = 1, per = 10 }: parsedQuery = req.query;
+    const sort = [];
+    sort["createdAt"] = "desc";
 
     const limit = per;
     const post = await postModel.findOne({ _id: id });
@@ -98,7 +99,7 @@ export const showPost = async (req: Request, res: Response) => {
       }
     );
     if (!post) {
-      return res.status(404).json({ message: "Not found" });
+      throw "Post not found";
     }
     return res.status(200).json({ post, comments });
   } catch (error) {
