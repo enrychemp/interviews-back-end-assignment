@@ -1,6 +1,6 @@
 {
   "name": "interviews-back-end-assignment",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "packageManager": "yarn@1.22.19",
   "private": true,
   "scripts": {
