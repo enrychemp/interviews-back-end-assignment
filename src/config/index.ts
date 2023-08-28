@@ -1,5 +1,8 @@
 import * as dotenv from "dotenv";
-dotenv.config();
+import dotenvExpand from "dotenv-expand";
+const appEnvs = dotenv.config();
+
+dotenvExpand.expand(appEnvs);
 
 function requiredProcessEnv(name: string): string | Error {
   if (!name) {

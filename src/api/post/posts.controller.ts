@@ -21,7 +21,7 @@ type parsedQuery = {
   sort?: {};
 };
 
-export const index = async (req: Request, res: Response) => {
+export const listPost = async (req: Request, res: Response) => {
   try {
     const {
       page = 1,
@@ -78,7 +78,7 @@ export const index = async (req: Request, res: Response) => {
   }
 };
 
-export const show = async (req: Request, res: Response) => {
+export const showPost = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const {
@@ -103,6 +103,45 @@ export const show = async (req: Request, res: Response) => {
     return res.status(200).json({ post, comments });
   } catch (error) {
     // console.error(error);
+    return res.status(400).json(error);
+  }
+};
+
+export const createPost = async (req: Request, res: Response) => {
+  try {
+    const { title, body } = req.body;
+    const newPost = await postModel.create({ title, body });
+
+    return res.status(200).json({ post: newPost });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+export const updatePost = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { title, body } = req.body;
+    const updatedPost = await postModel.findOneAndUpdate(
+      { _id: id },
+      { title, body },
+      { new: true, upsert: true }
+    );
+
+    return res.status(200).json({ post: updatedPost });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+export const deletePost = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const deletedPost = await postModel.deleteOne({ _id: id });
+    const deletedComments = await commentModel.deleteMany({ postId: id });
+
+    return res.status(200).json({ deletedPost, deletedComments });
+  } catch (error) {
     return res.status(400).json(error);
   }
 };

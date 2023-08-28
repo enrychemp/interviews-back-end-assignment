@@ -1777,6 +1777,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dotenv-expand@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "dotenv-expand@npm:10.0.0"
+  checksum: 2a38b470efe0abcb1ac8490421a55e1d764dc9440fd220942bce40965074f3fb00b585f4346020cb0f0f219966ee6b4ee5023458b3e2953fe5b3214de1b314ee
+  languageName: node
+  linkType: hard
+
 "dotenv@npm:^16.3.1":
   version: 16.3.1
   resolution: "dotenv@npm:16.3.1"
@@ -2418,6 +2425,7 @@ __metadata:
     "@types/jest": ^29.5.4
     consola: ^3.2.3
     dotenv: ^16.3.1
+    dotenv-expand: ^10.0.0
     express: ^4.18.2
     express-no-favicons: ^0.0.1
     jest: ^29.6.4

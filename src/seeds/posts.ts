@@ -4,13 +4,22 @@ import commentModel, {
   IComment,
   CommentDocument,
 } from "../api/comment/comment.model";
+import Consola from "consola";
 
-const run = async (reset, nPost = 10) => {
+/**
+ *
+ * @param reset
+ * @param nPost
+ */
+const run = async (reset = false, nPost = 10) => {
   if (reset) {
     // reset collections
     await postModel.deleteMany();
     await commentModel.deleteMany();
   }
+
+  let totalComments = 0;
+
   // create n posts
   for (let i = 0; i < nPost; i++) {
     const title = faker.lorem.sentence({ min: 3, max: 5 });
@@ -38,6 +47,7 @@ const run = async (reset, nPost = 10) => {
 
     await commentModel.create(comments);
 
+    totalComments += nComments;
     // get recent comment by related postId
     const lastComment = await commentModel
       .findOne({ postId: post._id })
@@ -49,6 +59,7 @@ const run = async (reset, nPost = 10) => {
       await post.save({ timestamps: false });
     }
   }
+  Consola.success(`Created ${nPost} posts and ${totalComments} comments`);
 };
 
 export default run;

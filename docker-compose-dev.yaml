@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+  ##
+  # api:
+  #   build:
+  #     context: .
+  #   environment:
+  #     NODE_ENV: production
+  #   depends_on:
+  #     - mongo
+  #   ports:
+  #     - 8001:8001
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    hostname: mongo
+    env_file: .env
+    volumes:
+      - db-data:/data/db
+    ports:
+      - "27017:27017"
+
+volumes:
+  db-data:

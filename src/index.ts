@@ -1,6 +1,5 @@
 import Consola from "consola";
 import app from "./app";
-import mongoose from "mongoose";
 import dbConn from "./libs/db";
 const server = async () => {
   try {
